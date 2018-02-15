@@ -3,14 +3,17 @@
 import csv
 import numpy as np
 import pandas as pd
-
+import re
 
 def scores():
     col_final = []
     number_of_studs = []
     with open('grades.csv', 'r') as grades:
-        data_reader = csv.reader(grades)
-        next(data_reader, None)   #removes column headers
+        for row in grades:
+            if "Final Score" in row[0:]
+        re.search()
+        # data_reader = csv.reader(grades)
+        # next(data_reader, None)   #removes column headers
         for line in data_reader:
             col_final.append(line[91][0:]) #the column headed "Final Score" is appended to col_final
             number_of_studs.append(line[0][0:])  # number of students are appended
@@ -180,31 +183,30 @@ def few_grades():
         col_final_mapped = map(float, col_final)
         col_sorted = sorted(col_final_mapped)
                 #Division of people -- A Grade
-        grade_a = round((10.0 / 100.0)* len(number_studs)) + 1
+        grade_a = round((10.0 / 100.0)* len(number_studs))
         grade_a_len = int(len(number_studs) - grade_a)
         cutoff_a = min(col_sorted[grade_a_len:])
                 #Division--- B grade
         grade_b = round((20.0 / 100.0) * len(number_studs))
         grade_b_len = int(grade_a_len - grade_b)
-        cutoff_b = min(col_sorted[grade_b_len-1:grade_a_len-1])
+        cutoff_b = min(col_sorted[grade_b_len:grade_a_len])
                 #Division --- C grade
         grade_c = round((30.0 / 100.0) * len(number_studs))
         grade_c_len = int(grade_b_len - grade_c)
-        cutoff_c = min(col_sorted[grade_c_len-1:grade_b_len-1])
+        cutoff_c = min(col_sorted[grade_c_len:grade_b_len])
                 #Division --- D grade
         grade_d = round((30.0 / 100.0) * len(number_studs))
         grade_d_len = int(grade_c_len - grade_d)
-        cutoff_d = min(col_sorted[grade_d_len - 1:grade_c_len - 1])
+        cutoff_d = min(col_sorted[grade_d_len :grade_c_len ])
                 #Division---F grade
-        cutoff_d = min(col_sorted[0:grade_d_len - 1])
-        #print grade_d
-        print len(col_sorted[0:grade_d_len - 1])
-        print "d",grade_d
-        print "c",grade_c
-        print "b",grade_b
-        print "a",grade_a
-        #print col_sorted[grade_d_len - 1:grade_c_len - 1]
-        #print grade_a_sorted
+        cutoff_f = min(col_sorted[0:grade_d_len])
+
+
+        print "A:",cutoff_a
+        print "B:", cutoff_b
+        print "C:", cutoff_c
+        print "D:", cutoff_d
+        print "F:", cutoff_f
 
 if __name__ == '__main__':
      #scores()

@@ -1,12 +1,25 @@
 #!/usr/bin/env python
 
-grades = [1,2,3,4,5]
-def sum1():
-    num = 0
-    for line in grades:
-        num = num + line
+import csv
 
-    return num
+with open('grades.csv', 'r') as grades:
+    reader = csv.reader(grades)
+    grade_head = reader.next()
+    j = str(grade_head)
+    print grade_head
+    matching = [s for s in grade_head if "Lab" in s]
+    print matching
+    for i,x in enumerate(grade_head):
+        #print i, x
+        if "Lab" in x:
+            print i
 
-print sum1()
+
+    # gen = (i for i, x in enumerate(grade_head) if x == matching)
+    # for i in gen:
+    #     print i
+    # #rest = [row for row in reader]
+    # if 'Student' in i:
+    #
+    #     print "True"
 
