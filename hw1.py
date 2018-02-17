@@ -47,7 +47,7 @@ def scores():
                 pass
             #print percentage above median
         percentage_median = (count_med / number_of_studs) * 100
-        print "Average score:", round(average_final, 2), "\nAbove Average:", round(percentage_above,2),"%", \
+        print "\nAverage score:", round(average_final, 2), "\nAbove Average:", round(percentage_above,2),"%", \
                         "\nMedian Score", median_final, "\nAbove Median:", round(percentage_median,2),"%"
 
 
