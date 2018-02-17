@@ -2,29 +2,27 @@
 
 import csv
 import numpy as np
-import pandas as pd
-import re
 
 def scores():
     col_final = []
-    number_of_studs = []
+    lab_name = []
     with open('grades.csv', 'r') as grades:
-        for row in grades:
-            if "Final Score" in row[0:]
-        re.search()
-        # data_reader = csv.reader(grades)
-        # next(data_reader, None)   #removes column headers
-        for line in data_reader:
-            col_final.append(line[91][0:]) #the column headed "Final Score" is appended to col_final
-            number_of_studs.append(line[0][0:])  # number of students are appended
+        reader = csv.reader(grades)
+        grade_head = reader.next()          #get the headers of grades.csv
 
-        number_studs = map(float, number_of_studs)
-        #col_final is a list of numbers as strings. They are converted to float using float
+        for i, x in enumerate(grade_head):    # get a column number along with name and take the i value that has name
+            if "Final Score" == x:
+                lab_name.append(i)
+            #save full column in col_final
+        for col in reader:
+            col_final.append(col[lab_name[0]][0:])
+            #get length of the column
+        number_of_studs = float(len(col_final))
         col_final_mapped = map(float, col_final)
         sum_final = sum(col_final_mapped)
 
                     #Average score
-        average_final = sum_final / float(len(number_studs))
+        average_final = sum_final / number_of_studs
 
         #check for above average and below average-----------------------
         count_above = 0
@@ -35,7 +33,7 @@ def scores():
             else:
                 count_below = count_below + 1
                     #print percentage of people
-        percentage_above = (count_above / float(len(number_studs))) * 100
+        percentage_above = (count_above / number_of_studs) * 100
 
         #check for median and above median-----------------------------
         median_final = np.median(col_final_mapped)
@@ -48,45 +46,75 @@ def scores():
             else:
                 pass
             #print percentage above median
-        percentage_median = (count_med / float(len(number_studs))) * 100
+        percentage_median = (count_med / number_of_studs) * 100
         print "Average score:", round(average_final, 2), "\nAbove Average:", round(percentage_above,2),"%", \
                         "\nMedian Score", median_final, "\nAbove Median:", round(percentage_median,2),"%"
-        #return average_final, percentage_above, median_final, percentage_median
 
 
-def hardest_assignment():
-    lab = []
-    lab1 = []
-    grades = open('grades.csv', 'r')
-    data_reader = csv.reader(grades)
-    next(data_reader, None)  # removes column headers
+def hardest_assignment(type):
+    sum_lab = []
+    col_final_norm = []
+    col_avg = []
+    col_final1=[]
+    lab_name = []
+    with open('grades.csv', 'r') as grades:
+        reader = csv.reader(grades)
+        grade_head = reader.next()          #get the headers of grades.csv
+        for i, x in enumerate(grade_head):  # get a column number along with name and take the i value that has name
+            if type in x:
+                lab_name.append(i)
 
-    for i in range(0,4):
-        for line in data_reader:
-            #for i in range(1, 11):
-
-            lab.append(line[i][0:])  # the column headed "Final Score" is appended to col_final
-            #if len(lab) % 164 == 0:
-            sum_assi1 = sum(map(float, lab))
-            lab1.append(sum_assi1)
-
-        print lab
-    print "\n", lab1
-    print len(lab)
-    print len(lab1)
+        reader = list(reader)
+        for name in lab_name:               #itertaing through all the columns that are named LAB
+            col_final = []
+            for col in reader:
+                try:
+                    col_final.append(float(col[name]))  # save full column in col_final
+                except ValueError:
+                    pass
+            col_final1.append(col_final)            #save all columns in col_final1
 
 
-    # df = pd.read_csv("grades.csv", header = None)
-    # test1 = df.Student
-    # print test1
+                    #NORMALIZE EACH COLUMN,
+        for x in col_final1:
+            col_final_norm_temp = []
+
+            for i in x:
+                p = (float(i)/float(max(x)))*100.0          #all numbers are now out of 100 and are in col_final_norm i.e normalized values
+                col_final_norm_temp.append(p)
+
+            col_final_norm.append(col_final_norm_temp)      #length of each column after normalizing and removing strings
+
+
+                    #TAKE SUM AND AVERAGE OF EACH COLUMN-----------------------
+        for x in col_final_norm:
+
+            col_avg.append(np.mean(x))                   #average of numbers after removing strings
+            sum_lab.append(np.sum(x))                       #sum of numbers are after removing strings are now in lab
+
+        sum_np = []
+        for a, b in enumerate(col_final_norm):
+            c = b < col_avg[a]
+            sum_np.append(np.sum(c))
+        max1 = max(sum_np)
+        index_s = sum_np.index(max1)
+        print "\nHardest",type,":",grade_head[lab_name[index_s]]
+
+
 
 def grade_scheme():
     col_final = []
+    lab_name = []
     with open('grades.csv', 'r') as grades:
-        data_reader = csv.reader(grades)
-        next(data_reader, None)  # removes column headers
-        for line in data_reader:
-            col_final.append(line[91][0:])  # the column headed "Final Score" is appended to col_final
+        reader = csv.reader(grades)
+        grade_head = reader.next()          #get the headers of grades.csv
+
+        for i, x in enumerate(grade_head):    # get a column number along with name and take the i value that has name
+            if "Final Score" == x:
+                lab_name.append(i)
+            #save full column in col_final
+        for col in reader:
+            col_final.append(col[lab_name[0]][0:])
 
         # col_final is a list of numbers as strings. They are converted to float using float
         col_final_mapped = map(float, col_final)
@@ -127,32 +155,26 @@ def grade_scheme():
                 count_d_minus = count_d_minus + 1
             elif i >= 0.0 and i < 61.0:
                 count_f = count_f + 1
-        #
-        # percentage_a = (count_A / float(len(number_studs))) * 100
-        # percentage_a_minus = (count_a / float(len(number_studs))) * 100
-        # percentage_B_plus = (count_B_plus / float(len(number_studs))) * 100
-        # percentage_b = (count_b / float(len(number_studs))) * 100
-        # percentage_b_minus = (count_b_minus / float(len(number_studs))) * 100
-        # percentage_c_plus = (count_c_plus / float(len(number_studs))) * 100
-        # percentage_c = (count_c / float(len(number_studs))) * 100
-        # percentage_c_minus = (count_c_minus / float(len(number_studs))) * 100
-        # percentage_d_plus = (count_d_plus / float(len(number_studs))) * 100
-        # percentage_d = (count_d / float(len(number_studs))) * 100
-        # percentage_d_minus = (count_d_minus / float(len(number_studs))) * 100
-        # percentage_f = (count_f / float(len(number_studs))) * 100
 
-        print "A:", count_A, "\nA-:", count_a, "\nB+:", count_B_plus,\
+
+        print "\nA:", count_A, "\nA-:", count_a, "\nB+:", count_B_plus,\
                 "\nB:", count_b, "\nB-:", count_b_minus, "\nC+:", count_c_plus,\
                 "\nC:", count_c, "\nC-:", count_c_minus, "\nD+:", count_d_plus,\
                 "\nD:", count_d, "\nD-:", count_d_minus, "\nF:", count_f
 
 def higher_grade():
     col_final = []
+    lab_name = []
     with open('grades.csv', 'r') as grades:
-        data_reader = csv.reader(grades)
-        next(data_reader, None)  # removes column headers
-        for line in data_reader:
-            col_final.append(line[91][0:])  # the column headed "Final Score" is appended to col_final
+        reader = csv.reader(grades)
+        grade_head = reader.next()          #get the headers of grades.csv
+
+        for i, x in enumerate(grade_head):    # get a column number along with name and take the i value that has name
+            if "Final Score" == x:
+                lab_name.append(i)
+            #save full column in col_final
+        for col in reader:
+            col_final.append(col[lab_name[0]][0:])
 
         # col_final is a list of numbers as strings. They are converted to float using float
         col_final_mapped = map(float, col_final)
@@ -166,51 +188,58 @@ def higher_grade():
 
                 count_A = count_A + 1
 
-        print count_A, "students will complain about their grade"
+        print "\n",count_A, "students will complain about their grade"
 
 def few_grades():
     col_final = []
     number_of_studs = []
-    grade_a_sorted = []
-    with open('grades.csv', 'r') as grades:
-        data_reader = csv.reader(grades)
-        next(data_reader, None)  # removes column headers
-        for line in data_reader:
-            col_final.append(line[91][0:])  # the column headed "Final Score" is appended to col_final
-            number_of_studs.append(line[0][0:])  # number of students are appended
 
-        number_studs = map(float, number_of_studs)
+
+    lab_name = []
+    with open('grades.csv', 'r') as grades:
+        reader = csv.reader(grades)
+        grade_head = reader.next()  # get the headers of grades.csv
+
+        for i, x in enumerate(grade_head):  # get a column number along with name and take the i value that has name
+            if "Final Score" == x:
+                lab_name.append(i)
+                # save full column in col_final
+        for col in reader:
+            col_final.append(col[lab_name[0]][0:])
+
+        number_of_studs = float(len(col_final))
         col_final_mapped = map(float, col_final)
         col_sorted = sorted(col_final_mapped)
                 #Division of people -- A Grade
-        grade_a = round((10.0 / 100.0)* len(number_studs))
-        grade_a_len = int(len(number_studs) - grade_a)
+        grade_a = round((10.0 / 100.0)* (number_of_studs))
+        grade_a_len = int((number_of_studs) - grade_a)
         cutoff_a = min(col_sorted[grade_a_len:])
                 #Division--- B grade
-        grade_b = round((20.0 / 100.0) * len(number_studs))
+        grade_b = round((20.0 / 100.0) * (number_of_studs))
         grade_b_len = int(grade_a_len - grade_b)
         cutoff_b = min(col_sorted[grade_b_len:grade_a_len])
                 #Division --- C grade
-        grade_c = round((30.0 / 100.0) * len(number_studs))
+        grade_c = round((30.0 / 100.0) * (number_of_studs))
         grade_c_len = int(grade_b_len - grade_c)
         cutoff_c = min(col_sorted[grade_c_len:grade_b_len])
                 #Division --- D grade
-        grade_d = round((30.0 / 100.0) * len(number_studs))
+        grade_d = round((30.0 / 100.0) * (number_of_studs))
         grade_d_len = int(grade_c_len - grade_d)
         cutoff_d = min(col_sorted[grade_d_len :grade_c_len ])
                 #Division---F grade
         cutoff_f = min(col_sorted[0:grade_d_len])
 
 
-        print "A:",cutoff_a
+        print "\nA:",cutoff_a
         print "B:", cutoff_b
         print "C:", cutoff_c
         print "D:", cutoff_d
         print "F:", cutoff_f
 
 if __name__ == '__main__':
-     #scores()
-     #hardest_assignment()
-     #grade_scheme()
-     #higher_grade()
+     scores()
+     hardest_assignment("Homework")
+     hardest_assignment("Lab")
+     grade_scheme()
+     higher_grade()
      few_grades()
